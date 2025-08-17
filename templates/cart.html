@@ -1,0 +1,79 @@
+{% extends "base.html" %} {% block title %}Shopping Cart{% endblock %} {% block
+content %}
+<h1 class="mb-4">Your Shopping Cart</h1>
+{% if cart %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Total</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart %}
+    <tr>
+      <td>
+        <img
+          src="{{ item.image }}"
+          alt="{{ item.title }}"
+          style="width: 50px; height: auto"
+        />
+        {{ item.title }}
+      </td>
+      <td>${{ item.price }}</td>
+      <td>
+        <form
+          method="POST"
+          action="{{ url_for('update_cart') }}"
+          class="d-inline"
+        >
+          <input
+            type="hidden"
+            name="product_id"
+            value="{{ item.product_id }}"
+          />
+          <input
+            type="number"
+            name="quantity"
+            value="{{ item.quantity }}"
+            min="1"
+            style="width: 60px"
+          />
+          <button type="submit" class="btn btn-sm btn-outline-secondary">
+            Update
+          </button>
+        </form>
+      </td>
+      <td>${{ item.price * item.quantity }}</td>
+      <td>
+        <a
+          href="{{ url_for('remove_from_cart', product_id=item.product_id) }}"
+          class="btn btn-sm btn-danger"
+          >Remove</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="3"></td>
+      <td><strong>Total: ${{ total }}</strong></td>
+      <td></td>
+    </tr>
+  </tfoot>
+</table>
+<div class="text-end">
+  <a href="{{ url_for('home') }}" class="btn btn-outline-secondary"
+    >Continue Shopping</a
+  >
+  <a href="#" class="btn btn-primary">Checkout</a>
+</div>
+{% else %}
+<div class="alert alert-info">
+  Your cart is empty. <a href="{{ url_for('home') }}">Start shopping!</a>
+</div>
+{% endif %} {% endblock %}
